@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import TodoList from '../components/TodoList';
-import { fetchTodos } from '../ducks/todos';
+import { fetchTodos, deleteTodo } from '../ducks/todos';
 
 function mapStateToProps(state) {
   return {
@@ -14,6 +14,9 @@ function mapDispatchToProps(dispatch) {
   return {
     onMount: () => {
       dispatch(fetchTodos());
+    },
+    onDelete: id => {
+      dispatch(deleteTodo(id));
     },
   };
 }

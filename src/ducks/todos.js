@@ -3,9 +3,46 @@ import axios from 'axios';
 const ADD_TODO_REQUEST = 'fds-redux-todo/todos/ADD_TODO_REQUEST';
 const ADD_TODO_SUCCESS = 'fds-redux-todo/todos/ADD_TODO_SUCCESS';
 const ADD_TODO_FAILURE = 'fds-redux-todo/todos/ADD_TODO_FAILURE';
+
+const DELETE_TODO_REQUEST = 'fds-redux-todo/todos/DELETE_TODO_REQUEST';
+const DELETE_TODO_SUCCESS = 'fds-redux-todo/todos/DELETE_TODO_SUCCESS';
+const DELETE_TODO_FAILURE = 'fds-redux-todo/todos/DELETE_TODO_FAILURE';
+
 const FETCH_TODOS_REQUEST = 'fds-redux-todo/todos/FETCH_TODOS_REQUEST';
 const FETCH_TODOS_SUCCESS = 'fds-redux-todo/todos/FETCH_TODOS_SUCCESS';
 const FETCH_TODOS_FAILURE = 'fds-redux-todo/todos/FETCH_TODOS_FAILURE';
+
+export function deleteTodoRequest() {
+  return {
+    type: DELETE_TODO_REQUEST,
+  };
+}
+
+export function deleteTodoSuccess() {
+  return {
+    type: DELETE_TODO_SUCCESS,
+  };
+}
+
+export function deleteTodoFailure(errorMsg) {
+  return {
+    type: DELETE_TODO_FAILURE,
+    errorMsg,
+  };
+}
+
+export function deleteTodo(id) {
+  return async function(dispatch) {
+    dispatch(deleteTodoRequest());
+    try {
+      await axios.delete(`https://invincible-thyme.glitch.me/todos/${id}`);
+      dispatch(deleteTodoSuccess());
+      dispatch(fetchTodos());
+    } catch (e) {
+      dispatch(deleteTodoFailure(e.message));
+    }
+  };
+}
 
 export function addTodoRequest() {
   return {
@@ -91,16 +128,19 @@ const initialState = {
 
 export default function todos(state = initialState, action) {
   switch (action.type) {
+    case DELETE_TODO_REQUEST:
     case ADD_TODO_REQUEST:
       return {
         ...state,
         loading: true,
       };
+    case DELETE_TODO_SUCCESS:
     case ADD_TODO_SUCCESS:
       return {
         ...state,
         loading: false,
       };
+    case DELETE_TODO_FAILURE:
     case ADD_TODO_FAILURE:
       return {
         ...state,
