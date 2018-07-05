@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 
 import TodoForm from '../components/TodoForm';
 
-import { addTodo } from '../store';
+import { addTodo } from '../ducks/todos';
 
 function mapStateToProps(state) {
   return {};
@@ -17,6 +17,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+  mapStateToProps, // redux state로부터 prop을 만들어내는 함수
+  mapDispatchToProps // dispatch로부터 prop을 만들어내는 함수
 )(TodoForm);
