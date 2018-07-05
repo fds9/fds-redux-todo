@@ -6,7 +6,7 @@ export default class TodoForm extends Component {
   };
 
   static defaultProps = {
-    onCreate: body => {},
+    onCreate: body => {}, // 할 일 추가 시 호출되는 함수
   };
 
   handleChange = e => {
