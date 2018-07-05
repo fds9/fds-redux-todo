@@ -12,10 +12,20 @@ export default class TodoList extends Component {
       // }
     ],
     onComplete: id => {}, // 할 일이 완료되었을 때 호출될 함수
+    loading: false,
+    errorMsg: null,
   };
+  // 나중에 지울 예정
+  componentDidMount() {
+    this.props.onMount && this.props.onMount();
+  }
   render() {
-    const { todos, onComplete } = this.props;
-    return todos.length > 0 ? (
+    const { todos, onComplete, loading, errorMsg } = this.props;
+    return loading ? (
+      <div>loading...</div>
+    ) : errorMsg ? (
+      <div>{errorMsg}</div>
+    ) : todos.length > 0 ? (
       <div>
         {todos.map(({ id, body, complete }) => (
           <TodoItem
