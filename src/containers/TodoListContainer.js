@@ -1,11 +1,6 @@
 import { connect } from 'react-redux';
-import axios from 'axios';
 import TodoList from '../components/TodoList';
-import {
-  fetchTodosRequest,
-  fetchTodosSuccess,
-  fetchTodosFailure,
-} from '../ducks/todos';
+import { fetchTodos } from '../ducks/todos';
 
 function mapStateToProps(state) {
   return {
@@ -17,14 +12,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onMount: async function() {
-      dispatch(fetchTodosRequest());
-      try {
-        const res = await axios.get('https://invincible-thyme.glitch.me/todos');
-        dispatch(fetchTodosSuccess(res.data));
-      } catch (e) {
-        dispatch(fetchTodosFailure(e.message));
-      }
+    onMount: () => {
+      dispatch(fetchTodos());
     },
   };
 }

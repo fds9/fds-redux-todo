@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 const ADD_TODO = 'fds-redux-todo/todos/ADD_TODO';
 const FETCH_TODOS_REQUEST = 'fds-redux-todo/todos/FETCH_TODOS_REQUEST';
 const FETCH_TODOS_SUCCESS = 'fds-redux-todo/todos/FETCH_TODOS_SUCCESS';
@@ -29,6 +31,22 @@ export function fetchTodosFailure(errorMsg) {
   return {
     type: FETCH_TODOS_FAILURE,
     errorMsg,
+  };
+}
+
+// redux-thunk 미들웨어가 적용된 스토어에
+// 함수를 투입하면
+// 스토어는 그 함수에 dispatch 함수를 인수로 줘서 실행시킨다.
+
+export function fetchTodos() {
+  return async function(dispatch) {
+    dispatch(fetchTodosRequest());
+    try {
+      const res = await axios.get('https://invincible-thyme.glitch.me/todos');
+      dispatch(fetchTodosSuccess(res.data));
+    } catch (e) {
+      dispatch(fetchTodosFailure(e.message));
+    }
   };
 }
 
