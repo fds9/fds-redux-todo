@@ -1,16 +1,44 @@
 import axios from 'axios';
 
-const ADD_TODO = 'fds-redux-todo/todos/ADD_TODO';
+const ADD_TODO_REQUEST = 'fds-redux-todo/todos/ADD_TODO_REQUEST';
+const ADD_TODO_SUCCESS = 'fds-redux-todo/todos/ADD_TODO_SUCCESS';
+const ADD_TODO_FAILURE = 'fds-redux-todo/todos/ADD_TODO_FAILURE';
 const FETCH_TODOS_REQUEST = 'fds-redux-todo/todos/FETCH_TODOS_REQUEST';
 const FETCH_TODOS_SUCCESS = 'fds-redux-todo/todos/FETCH_TODOS_SUCCESS';
 const FETCH_TODOS_FAILURE = 'fds-redux-todo/todos/FETCH_TODOS_FAILURE';
 
-let idCount = 1;
+export function addTodoRequest() {
+  return {
+    type: ADD_TODO_REQUEST,
+  };
+}
+
+export function addTodoSuccess() {
+  return {
+    type: ADD_TODO_SUCCESS,
+  };
+}
+
+export function addTodoFailure(errorMsg) {
+  return {
+    type: ADD_TODO_FAILURE,
+    errorMsg,
+  };
+}
 
 export function addTodo(body) {
-  return {
-    type: ADD_TODO,
-    body,
+  return async function(dispatch) {
+    dispatch(addTodoRequest());
+    try {
+      await axios.post('https://invincible-thyme.glitch.me/todos', {
+        body,
+        complete: false,
+      });
+      dispatch(addTodoSuccess());
+      dispatch(fetchTodos());
+    } catch (e) {
+      dispatch(addTodoFailure(e.message));
+    }
   };
 }
 
@@ -63,17 +91,21 @@ const initialState = {
 
 export default function todos(state = initialState, action) {
   switch (action.type) {
-    case ADD_TODO:
+    case ADD_TODO_REQUEST:
       return {
         ...state,
-        items: [
-          ...state.items,
-          {
-            id: idCount++,
-            body: action.body,
-            complete: false,
-          },
-        ],
+        loading: true,
+      };
+    case ADD_TODO_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+      };
+    case ADD_TODO_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        errorMsg: action.errorMsg,
       };
     case FETCH_TODOS_REQUEST:
       return {
